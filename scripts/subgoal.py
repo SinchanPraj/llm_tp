@@ -1,24 +1,34 @@
 import sys
 import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..")))
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
 
 from utils import prompts, llm_functions as llm
-import tree_generation as tg
+import scripts.tree_generation as tg
 from scripts import mcts
 import pddlpy
 import time
-import symbolic as sym
+import scripts.symbolic as sym
 import re
 from collections import defaultdict
 
 
-def generate_subgoals(model, domain, problem, max_tokens, temperature=0.0):
+def generate_subgoals(model, domain, problem, max_tokens, temperature=0.0, backend="ollama", base_url=None, api_key=None):
+    """
+    Prompt LLM to decompose a problem into intermediate subgoals.
+    Defaults to Ollama since subgoal extraction only requires text output.
+    """
     if domain == "barman":
         args = prompts.get_barman_args(0)
-    if domain == "blocksworld":
+    elif domain == "blocksworld":
         args = prompts.get_blocksworld_args(0)
-    if domain == "gripper":
+    elif domain == "gripper":
         args = prompts.get_gripper_args(0)
+    else:
+        raise ValueError(f"Unknown domain: {domain}")
+
     system_prompt = args.subgoal_prompt
 
     chat_history = [{
@@ -38,23 +48,47 @@ def generate_subgoals(model, domain, problem, max_tokens, temperature=0.0):
         }
     )
 
-    completion = llm.get_session_completion(chat_history, model=model, max_tokens=max_tokens,
-                                            temperature=temperature, logprobs=True)
+    completion = llm.get_session_completion(
+        chat_history,
+        model=model,
+        max_tokens=max_tokens,
+        temperature=temperature,
+        logprobs=False,
+        backend=backend,
+        base_url=base_url,
+        api_key=api_key
+    )
 
     goals_str = completion["choices"][0]['message']["content"]
-    subgoals = re.findall(r'\(:goal\s*\(.*?\)\)\)', goals_str, re.DOTALL)
-    chat_history.append(
-        {
-            "role": "assistant",
-            "content": completion["choices"][0]['message']["content"]
-        }
-    )
-    print("Subgoals: \n", subgoals)
+    subgoals = []
+    idx = 0
+    while True:
+        pos = goals_str.find("(:goal", idx)
+        if pos == -1:
+            break
+        open_parens = 0
+        end_pos = pos
+        for i in range(pos, len(goals_str)):
+            if goals_str[i] == '(':
+                open_parens += 1
+            elif goals_str[i] == ')':
+                open_parens -= 1
+                if open_parens == 0:
+                    end_pos = i + 1
+                    break
+        if open_parens == 0:
+            subgoals.append(goals_str[pos:end_pos].strip())
+            idx = end_pos
+        else:
+            idx = pos + 6
 
+    print("Subgoals extracted: \n", subgoals, flush=True)
     return subgoals
 
 
 def create_pddl_problem_file(new_problem_f, domain_name, init_state, subgoal, objects, i):
+    """Create a temporary PDDL subproblem file for intermediate goal planning."""
+    os.makedirs(os.path.dirname(new_problem_f), exist_ok=True)
     pddl_problem_str = f"""
     (define (problem prob-{i})
         (:domain {domain_name})
@@ -66,7 +100,7 @@ def create_pddl_problem_file(new_problem_f, domain_name, init_state, subgoal, ob
         
     )
     """
-    with open(new_problem_f, "w") as file:
+    with open(new_problem_f, "w", encoding="utf-8") as file:
         file.write(pddl_problem_str)
 
 
@@ -74,16 +108,13 @@ def connect_trees(trees):
     if not trees:
         raise ValueError("The list of trees is empty. Cannot connect trees.")
 
-    # Start with the first tree as the base
     main_tree = trees[0]
 
-    # Iterate over the list of trees
     for i in range(len(trees) - 1):
         current_tree = trees[i]
         next_tree = trees[i + 1]
         next_tree_root = next_tree.root
 
-        # Find a matching leaf node in the current tree that matches the root of the next tree
         matching_leaf = None
         for node in current_tree.G.nodes:
             if node == next_tree_root:
@@ -93,12 +124,10 @@ def connect_trees(trees):
         if matching_leaf is None:
             raise ValueError(f"No matching leaf node found in Tree {i} for connecting to Tree {i + 1}'s root.")
 
-        # Connect the matching leaf node of the current tree to the root node of the next tree
         main_tree.add_node(matching_leaf, next_tree_root, action=None, weight=1, indices=[i, 0], visits=0, win=0)
 
-        # Add all nodes and edges from next_tree into main_tree
         for node in next_tree.G.nodes:
-            if node != next_tree_root:  # Avoid re-adding the root node
+            if node != next_tree_root:
                 main_tree.G.add_node(node, **next_tree.G.nodes[node])
 
         for edge in next_tree.G.edges(data=True, keys=True):
@@ -109,13 +138,18 @@ def connect_trees(trees):
 
 
 def solve_symbolic_llm(domprob, domain, model, prob_size, prob_idx, subgoals, planner, plan_f, path):
-    domain_f = f"../domains/domain_{domain}.pddl"
-    problem_f = f"../experiments/{domain}/problem/{domain}{prob_size}_{prob_idx}.pddl"
+    """
+    Solve subgoals sequentially using Fast Downward.
+    Subgoals generated by Ollama; exact actions sequenced by classical planner.
+    """
+    domain_f = os.path.join(PROJECT_ROOT, "domains", f"domain_{domain}.pddl")
+    problem_f = os.path.join(PROJECT_ROOT, "experiments", domain, "problem", f"{domain}{prob_size}_{prob_idx}.pddl")
 
     # read original initial state from problem file
-    with open(problem_f, 'r') as file:
+    with open(problem_f, 'r', encoding="utf-8") as file:
         pddl_content = file.read()
 
+    initial_state_str = ""
     init_match = re.search(r'\(:init\s*(.*?)\)\s*\(:goal', pddl_content, re.DOTALL)
     if init_match:
         initial_state_str = init_match.group(1).strip()
@@ -131,22 +165,27 @@ def solve_symbolic_llm(domprob, domain, model, prob_size, prob_idx, subgoals, pl
     initial_state = tuple(sorted((k, tuple(sorted(v))) for k, v in initial_state.items()))
     state = initial_state
 
+    objects_str = ""
     objects_match = re.search(r'\(:objects\s*(.*?)\)\s*\(:', pddl_content, re.DOTALL)
     if objects_match:
         objects_str = objects_match.group(1).strip()
 
     for i, subgoal in enumerate(subgoals):
-        subgoal_plan_f = f"../experiments/{domain}/plan/symbolic-llm/{domain}{prob_size}_{prob_idx}_{i}.pddl"
-        subgoal_sas_f = f"../experiments/{domain}/plan/symbolic-llm/{domain}{prob_size}_{prob_idx}__{i}.pddl.sas"
+        subgoal_plan_dir = os.path.join(PROJECT_ROOT, "experiments", domain, "plan", "symbolic-llm")
+        os.makedirs(subgoal_plan_dir, exist_ok=True)
+        subgoal_plan_f = os.path.join(subgoal_plan_dir, f"{domain}{prob_size}_{prob_idx}_{i}.pddl")
+        subgoal_sas_f = os.path.join(subgoal_plan_dir, f"{domain}{prob_size}_{prob_idx}__{i}.pddl.sas")
 
-        # Create new problem pddl. initial state: states[i], goal state: subgoal
-        new_problem_f = f"../experiments/{domain}/subgoal_problems/symbolic-llm/{domain}{prob_size}_{prob_idx}_{i}.pddl"
+        subproblem_dir = os.path.join(PROJECT_ROOT, "experiments", domain, "subgoal_problems", "symbolic-llm")
+        os.makedirs(subproblem_dir, exist_ok=True)
+        new_problem_f = os.path.join(subproblem_dir, f"{domain}{prob_size}_{prob_idx}_{i}.pddl")
+        
         create_pddl_problem_file(new_problem_f, domain, states[i], subgoal, objects_str, i)
 
         success, subgoal_plan, output, planning_time = sym.fd_planner(subgoal_plan_f, subgoal_sas_f, domain_f, new_problem_f, planner, path)
         subgoal_plans.append(subgoal_plan)
 
-        # change subgoal plan into list
+        # parse subgoal plan into action list
         response_text = subgoal_plan.strip()
         action_lines = []
         lines = response_text.split('\n')
@@ -163,36 +202,43 @@ def solve_symbolic_llm(domprob, domain, model, prob_size, prob_idx, subgoals, pl
                         new_state = tg.apply_action(state, action, domprob)
                         state = new_state
                     except ValueError as e:
-                        print(f"Error applying action: {e}")
+                        print(f"Error applying action '{action}': {e}")
                         break
             else:
                 new_state = state
-                print("No action needed")
+                print("No action needed for this subgoal.")
 
             new_state_str = tg.state_tuple_to_pddl_str(new_state)
             states.append(new_state_str)
             continue
         else:
-            print(f"Subgoal {i} planning failed!")
+            print(f"Subgoal {i} planning failed with Fast Downward!")
             break
 
-    # save the final plan
-    with open(plan_f, "w") as f:
+    # Save the final combined plan
+    os.makedirs(os.path.dirname(plan_f), exist_ok=True)
+    with open(plan_f, "w", encoding="utf-8") as f:
         for plan in subgoal_plans:
             f.write(plan)
             f.write("\n")
-    with open(plan_f, "r") as f:
+
+    with open(plan_f, "r", encoding="utf-8") as f:
         final_plan = f.read()
     return final_plan
 
 
-def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_idx, subgoals, max_tokens, temperature):
-    domain_f = f"../domains/domain_{domain}.pddl"
-    problem_f = f"../experiments/{domain}/problem/{domain}{prob_size}_{prob_idx}.pddl"
+def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_idx, subgoals, max_tokens, temperature, backend="vllm", base_url=None, api_key=None):
+    """
+    Solve each subgoal using MCTS with candidate plans sampled from vLLM.
+    vLLM provides token logprobs used by seq_prob to weight tree edges.
+    """
+    domain_f = os.path.join(PROJECT_ROOT, "domains", f"domain_{domain}.pddl")
+    problem_f = os.path.join(PROJECT_ROOT, "experiments", domain, "problem", f"{domain}{prob_size}_{prob_idx}.pddl")
 
-    with open(problem_f, 'r') as file:
+    with open(problem_f, 'r', encoding="utf-8") as file:
         pddl_content = file.read()
 
+    initial_state_str = ""
     init_match = re.search(r'\(:init\s*(.*?)\)\s*\(:goal', pddl_content, re.DOTALL)
     if init_match:
         initial_state_str = init_match.group(1).strip()
@@ -206,6 +252,7 @@ def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_
         initial_state[predicate].add(tuple(args))
     initial_state = tuple(sorted((k, tuple(sorted(v))) for k, v in initial_state.items()))
 
+    objects_str = ""
     objects_match = re.search(r'\(:objects\s*(.*?)\)\s*\(:', pddl_content, re.DOTALL)
     if objects_match:
         objects_str = objects_match.group(1).strip()
@@ -214,18 +261,24 @@ def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_
     states_pathes = [[initial_state]]
     actions_pathes = []
 
-
     for i, subgoal in enumerate(subgoals):
-        subgoal_plan_f = f"../experiments/{domain}/plan/mcts-llm/{domain}{prob_size}_{prob_idx}_{i}.pddl"
-        subgoal_sas_f = f"../experiments/{domain}/plan/mcts-llm/{domain}{prob_size}_{prob_idx}_{i}.pddl.sas"
-        new_problem_f = f"../experiments/{domain}/subgoal_problems/mcts-llm/{domain}{prob_size}_{prob_idx}_{i}.pddl"
+        print(f"\n--- [Subgoal {i + 1}/{len(subgoals)}] Planning: {subgoal} ---", flush=True)
+        subproblem_dir = os.path.join(PROJECT_ROOT, "experiments", domain, "subgoal_problems", "mcts-llm")
+        os.makedirs(subproblem_dir, exist_ok=True)
+        new_problem_f = os.path.join(subproblem_dir, f"{domain}{prob_size}_{prob_idx}_{i}.pddl")
+        
         create_pddl_problem_file(new_problem_f, domain, states[i], subgoal, objects_str, i)
-        with open(new_problem_f, "r") as file:
+        with open(new_problem_f, "r", encoding="utf-8") as file:
             new_problem = file.read()
 
         subgoal_domprob = pddlpy.DomainProblem(domain_f, new_problem_f)
 
-        tree = tg.create_state_tree(subgoal_domprob, model, plan_number, domain, new_problem, max_tokens, temperature)
+        print(f"Sampling {plan_number} candidate plan(s) via LLM ({model})...", flush=True)
+        tree = tg.create_state_tree(
+            subgoal_domprob, model, plan_number, domain, new_problem,
+            max_tokens, temperature, backend=backend, base_url=base_url, api_key=api_key
+        )
+        print(f"Running MCTS search on constructed tree ({len(tree.G.nodes)} nodes)...", flush=True)
         states_path, actions_path = mcts.mcts(tree, subgoal_domprob, 50)
         trees.append(tree)
 
@@ -235,7 +288,7 @@ def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_
         if actions_path != ["; cost = 0 (unit cost)"]:
             actions_pathes.append(actions_path)
 
-        if states_path and actions_path:  # the planning succeed
+        if states_path and actions_path:
             if states_path == ["; cost = 0 (unit cost)"] and actions_path == ["; cost = 0 (unit cost)"]:
                 new_state = states_pathes[-1][-1]
                 new_state_str = tg.state_tuple_to_pddl_str(new_state)
@@ -246,28 +299,26 @@ def solve_mcts_llm(domprob, domain, model, plan_f, plan_number, prob_size, prob_
                 states.append(new_state_str)
                 continue
         else:
-            print(f"Subgoal {i} planning failed!")
+            print(f"Subgoal {i} MCTS planning failed to find valid path!")
             break
 
-    # connect each tree in 'trees'. You have to find the leaf node of trees[i] which is same with root node of trees[i+1] and connect them.
-    # The leaf node of trees[i] becomes the parent node, and root node of trees[i+1] becomes the child node.
     try:
         connected_tree = connect_trees(trees)
     except ValueError as e:
         connected_tree = None
-        print(e)
+        print(f"Notice during tree connection: {e}")
 
-    with open(plan_f, "w") as f:
-        for actions_path in actions_pathes:
-            for action in actions_path:
+    os.makedirs(os.path.dirname(plan_f), exist_ok=True)
+    with open(plan_f, "w", encoding="utf-8") as f:
+        for ap in actions_pathes:
+            for action in ap:
                 f.write(f"{action}\n")
-            f.write("\n")  # add a newline between subgoal plans
+            f.write("\n")
 
-    with open(plan_f, "r") as f:
+    with open(plan_f, "r", encoding="utf-8") as f:
         final_plan = f.read()
 
-    combined_states_path = [state for states_path in states_pathes for state in states_path]
-    combined_actions_path = [action for actions_path in actions_pathes for action in actions_path]
+    combined_states_path = [state for sp in states_pathes for state in sp]
+    combined_actions_path = [action for ap in actions_pathes for action in ap]
 
     return connected_tree, final_plan, combined_states_path, combined_actions_path
-

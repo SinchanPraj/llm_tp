@@ -1,0 +1,20 @@
+Problem size: 2, Plan number: 1
+Average planning time: 0.0000 seconds
+Success rate: 0.0000%
+Problem 1: Failure
+
+Problem size: 2, Plan number: 1
+Average planning time: 0.0000 seconds
+Success rate: 0.0000%
+Problem 1: Failure
+
+Problem size: 2, Plan number: 1
+Average planning time: 1.3012 seconds
+Success rate: 100.0000%
+Problem 1: Success
+
+Problem size: 2, Plan number: 1
+Average planning time: 1.3038 seconds
+Success rate: 100.0000%
+Problem 1: Success
+

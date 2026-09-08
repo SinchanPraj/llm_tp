@@ -1,41 +1,46 @@
 import argparse
+import os
+
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+
+def _read_file(rel_path):
+    # Normalize relative path
+    clean_path = rel_path.replace("\\", "/")
+    if clean_path.startswith("../"):
+        clean_path = clean_path[3:]
+    elif clean_path.startswith("./"):
+        clean_path = clean_path[2:]
+
+    full_path = os.path.join(PROJECT_ROOT, clean_path)
+    if os.path.exists(full_path):
+        with open(full_path, "r", encoding="utf-8") as f:
+            return f.read()
+    if os.path.exists(rel_path):
+        with open(rel_path, "r", encoding="utf-8") as f:
+            return f.read()
+    return ""
 
 
 def get_barman_args(K):
     parser = argparse.ArgumentParser()
 
-    with open("../domains/domain_barman.pddl", "r") as f:
-        domain = f.read()
-    with open("../experiments/barman/problem/barman_context_1.pddl", "r") as f:
-        problem_context_1 = f.read()
-    with open("../experiments/barman/problem/barman_context_2.pddl", "r") as f:
-        problem_context_2 = f.read()
-    with open("../experiments/barman/plan/barman_context_1.pddl", "r") as f:
-        plan_context_1 = f.read()
-    with open("../experiments/barman/plan/barman_context_2.pddl", "r") as f:
-        plan_context_2 = f.read()
-    with open("../experiments/barman/plan/barman_context_1_1.pddl", "r") as f:
-        plan_context_1_1 = f.read()
-    with open("../experiments/barman/plan/barman_context_2_2.pddl", "r") as f:
-        plan_context_2_2 = f.read()
-    with open("../experiments/barman/plan/barman_context_2_3.pddl", "r") as f:
-        plan_context_2_3 = f.read()
-    with open("../experiments/barman/problem/barman_subgoal_3_1.pddl", "r") as f:
-        problem_subgoal_3_1 = f.read()
-    with open("../experiments/barman/problem/barman_subgoal_3_2.pddl", "r") as f:
-        problem_subgoal_3_2 = f.read()
-    with open("../experiments/barman/problem/barman_subgoal_3_3.pddl", "r") as f:
-        problem_subgoal_3_3 = f.read()
-    with open("../experiments/barman/plan/barman_subgoal_3_1.pddl", "r") as f:
-        plan_subgoal_3_1 = f.read()
-    with open("../experiments/barman/plan/barman_subgoal_3_2.pddl", "r") as f:
-        plan_subgoal_3_2 = f.read()
-    with open("../experiments/barman/plan/barman_subgoal_3_3.pddl", "r") as f:
-        plan_subgoal_3_3 = f.read()
-    with open("../experiments/barman/plan/barman_subgoal_3_2_1.pddl", "r") as f:
-        plan_subgoal_3_2_1 = f.read()
-    with open("../experiments/barman/plan/barman_subgoal_3_3_1.pddl", "r") as f:
-        plan_subgoal_3_3_1 = f.read()
+    domain = _read_file("domains/domain_barman.pddl")
+    problem_context_1 = _read_file("experiments/barman/problem/barman_context_1.pddl")
+    problem_context_2 = _read_file("experiments/barman/problem/barman_context_2.pddl")
+    plan_context_1 = _read_file("experiments/barman/plan/barman_context_1.pddl")
+    plan_context_2 = _read_file("experiments/barman/plan/barman_context_2.pddl")
+    plan_context_1_1 = _read_file("experiments/barman/plan/barman_context_1_1.pddl")
+    plan_context_2_2 = _read_file("experiments/barman/plan/barman_context_2_2.pddl")
+    plan_context_2_3 = _read_file("experiments/barman/plan/barman_context_2_3.pddl")
+    problem_subgoal_3_1 = _read_file("experiments/barman/problem/barman_subgoal_3_1.pddl")
+    problem_subgoal_3_2 = _read_file("experiments/barman/problem/barman_subgoal_3_2.pddl")
+    problem_subgoal_3_3 = _read_file("experiments/barman/problem/barman_subgoal_3_3.pddl")
+    plan_subgoal_3_1 = _read_file("experiments/barman/plan/barman_subgoal_3_1.pddl")
+    plan_subgoal_3_2 = _read_file("experiments/barman/plan/barman_subgoal_3_2.pddl")
+    plan_subgoal_3_3 = _read_file("experiments/barman/plan/barman_subgoal_3_3.pddl")
+    plan_subgoal_3_2_1 = _read_file("experiments/barman/plan/barman_subgoal_3_2_1.pddl")
+    plan_subgoal_3_3_1 = _read_file("experiments/barman/plan/barman_subgoal_3_3_1.pddl")
 
 
     parser.add_argument("--domain", type=str, default=domain)
@@ -257,177 +262,178 @@ def get_blocksworld_args(K):
     parser = argparse.ArgumentParser()
 
     # open files
-    with open("../domains/domain_blocksworld.pddl", "r") as f:
-        domain = f.read()
-    with open("../experiments/blocksworld/problem/blocksworld_context_8_1.pddl", "r") as f:
+    domain = _read_file("domains/domain_blocksworld.pddl")
+    problem_3_1 = _read_file("experiments/blocksworld/problem/blocksworld3_1.pddl")
+    plan_3_1 = _read_file("experiments/blocksworld/plan/blocksworld_3_31.pddl")
+    with open("experiments/blocksworld/problem/blocksworld_context_8_1.pddl", "r") as f:
         problem_context_8_1 = f.read()
-    with open("../experiments/blocksworld/plan/blocksworld_context_8_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/blocksworld_context_8_1.pddl", "r") as f:
         plan_context_8_1 = f.read()
-    with open("../experiments/blocksworld/problem/blocksworld_context_9_1.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/blocksworld_context_9_1.pddl", "r") as f:
         problem_context_9_1 = f.read()
-    with open("../experiments/blocksworld/problem/blocksworld_context_9_2.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/blocksworld_context_9_2.pddl", "r") as f:
         problem_context_9_2 = f.read()
-    with open("../experiments/blocksworld/problem/blocksworld_context_10_1.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/blocksworld_context_10_1.pddl", "r") as f:
         problem_context_10_1 = f.read()
-    with open("../experiments/blocksworld/problem/blocksworld_context_10_2.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/blocksworld_context_10_2.pddl", "r") as f:
         problem_context_10_2 = f.read()
-    with open("../experiments/blocksworld/plan/blocksworld_context_9_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/blocksworld_context_9_1.pddl", "r") as f:
         plan_context_9_1 = f.read()
-    with open("../experiments/blocksworld/plan/blocksworld_context_9_2.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/blocksworld_context_9_2.pddl", "r") as f:
         plan_context_9_2 = f.read()
-    with open("../experiments/blocksworld/plan/blocksworld_context_10_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/blocksworld_context_10_1.pddl", "r") as f:
         plan_context_10_1 = f.read()
-    with open("../experiments/blocksworld/plan/blocksworld_context_10_2.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/blocksworld_context_10_2.pddl", "r") as f:
         plan_context_10_2 = f.read()
 
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_0.pddl", "r") as f:
         plan_8_0 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_1.pddl", "r") as f:
         plan_8_1 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_2.pddl", "r") as f:
         plan_8_2 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_3.pddl", "r") as f:
         plan_8_3 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_4.pddl", "r") as f:
         plan_8_4 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_5.pddl", "r") as f:
         plan_8_5 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_6.pddl", "r") as f:
         plan_8_6 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_7.pddl", "r") as f:
         plan_8_7 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_8.pddl", "r") as f:
         plan_8_8 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_9.pddl", "r") as f:
         plan_8_9 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld8_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld8_31_K0_10.pddl", "r") as f:
         plan_8_10 = f.read()
 
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_0.pddl", "r") as f:
         plan_9_0 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_1.pddl", "r") as f:
         plan_9_1 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_2.pddl", "r") as f:
         plan_9_2 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_3.pddl", "r") as f:
         plan_9_3 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_4.pddl", "r") as f:
         plan_9_4 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_5.pddl", "r") as f:
         plan_9_5 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_6.pddl", "r") as f:
         plan_9_6 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_7.pddl", "r") as f:
         plan_9_7 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_8.pddl", "r") as f:
         plan_9_8 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_9.pddl", "r") as f:
         plan_9_9 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_10.pddl", "r") as f:
         plan_9_10 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld9_31_K0_11.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld9_31_K0_11.pddl", "r") as f:
         plan_9_11 = f.read()
 
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_0.pddl", "r") as f:
         plan_10_0 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_1.pddl", "r") as f:
         plan_10_1 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_2.pddl", "r") as f:
         plan_10_2 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_3.pddl", "r") as f:
         plan_10_3 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_4.pddl", "r") as f:
         plan_10_4 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_5.pddl", "r") as f:
         plan_10_5 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_6.pddl", "r") as f:
         plan_10_6 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_7.pddl", "r") as f:
         plan_10_7 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_8.pddl", "r") as f:
         plan_10_8 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_9.pddl", "r") as f:
         plan_10_9 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_10.pddl", "r") as f:
         plan_10_10 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_11.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_11.pddl", "r") as f:
         plan_10_11 = f.read()
-    with open("../experiments/blocksworld/plan/context/blocksworld10_31_K0_12.pddl", "r") as f:
+    with open("experiments/blocksworld/plan/context/blocksworld10_31_K0_12.pddl", "r") as f:
         plan_10_12 = f.read()
 
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_0.pddl", "r") as f:
         problem_8_0 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_1.pddl", "r") as f:
         problem_8_1 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_2.pddl", "r") as f:
         problem_8_2 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_3.pddl", "r") as f:
         problem_8_3 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_4.pddl", "r") as f:
         problem_8_4 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_5.pddl", "r") as f:
         problem_8_5 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_6.pddl", "r") as f:
         problem_8_6 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_7.pddl", "r") as f:
         problem_8_7 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_8.pddl", "r") as f:
         problem_8_8 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_9.pddl", "r") as f:
         problem_8_9 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld8_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld8_31_K0_10.pddl", "r") as f:
         problem_8_10 = f.read()
 
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_0.pddl", "r") as f:
         problem_9_0 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_1.pddl", "r") as f:
         problem_9_1 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_2.pddl", "r") as f:
         problem_9_2 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_3.pddl", "r") as f:
         problem_9_3 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_4.pddl", "r") as f:
         problem_9_4 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_5.pddl", "r") as f:
         problem_9_5 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_6.pddl", "r") as f:
         problem_9_6 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_7.pddl", "r") as f:
         problem_9_7 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_8.pddl", "r") as f:
         problem_9_8 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_9.pddl", "r") as f:
         problem_9_9 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_10.pddl", "r") as f:
         problem_9_10 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld9_31_K0_11.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld9_31_K0_11.pddl", "r") as f:
         problem_9_11 = f.read()
 
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_0.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_0.pddl", "r") as f:
         problem_10_0 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_1.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_1.pddl", "r") as f:
         problem_10_1 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_2.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_2.pddl", "r") as f:
         problem_10_2 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_3.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_3.pddl", "r") as f:
         problem_10_3 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_4.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_4.pddl", "r") as f:
         problem_10_4 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_5.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_5.pddl", "r") as f:
         problem_10_5 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_6.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_6.pddl", "r") as f:
         problem_10_6 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_7.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_7.pddl", "r") as f:
         problem_10_7 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_8.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_8.pddl", "r") as f:
         problem_10_8 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_9.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_9.pddl", "r") as f:
         problem_10_9 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_10.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_10.pddl", "r") as f:
         problem_10_10 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_11.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_11.pddl", "r") as f:
         problem_10_11 = f.read()
-    with open("../experiments/blocksworld/problem/context/blocksworld10_31_K0_12.pddl", "r") as f:
+    with open("experiments/blocksworld/problem/context/blocksworld10_31_K0_12.pddl", "r") as f:
         problem_10_12 = f.read()
 
 
@@ -494,259 +500,93 @@ def get_blocksworld_args(K):
 
     subgoal_prompt = f'''
     You are a helpful assistant generating PDDL subgoals.  
-    Given a domain PDDL and a problem PDDL, generate subgoals in the from of PDDL goal state. 
-    Decide each subgoal by looking at how the problem is solved based on the plan example provided for another task, and breaking down the original goal state into multiple subgoals.
-    Create subgoals in the order they need to be achieved first.
-    Distinguish each subgoal as 'Subgoal 1:', 'Subgoal 2:', and so on.
-    ONLY return PDDL goal. Return nothing else.
+    Given a domain PDDL and a problem PDDL, decompose the final goal into sequential intermediate subgoals.
+    For a 3-block problem, ALWAYS output exactly 4 separate subgoals:
+    1. First subgoal: clear the destination table (e.g. (:goal (and (clear b1) (clear-table t3))))
+    2. Second subgoal: place bottom block on destination table (e.g. (:goal (and (on-table b1 t3))))
+    3. Third subgoal: stack middle block (e.g. (:goal (and (on b3 b1))))
+    4. Fourth subgoal: stack top block (e.g. (:goal (and (on b2 b3))))
+
+    ONLY return the PDDL goal expressions like (:goal (and ...)). Return nothing else.
 
     Domain PDDL:
     {domain}
 
-    Example Problem PDDL 1:
-    {problem_context_9_2}
+    Example Problem PDDL:
+    (define (problem prob-example)
+      (:domain blocksworld)
+      (:objects b1 b2 b3 - block t1 t2 t3 - table)
+      (:init (on b1 b2) (on b2 b3) (on-table b3 t3) (clear b1) (clear-table t1) (clear-table t2))
+      (:goal (and (on-table b1 t3) (on b3 b1) (on b2 b3))))
 
-    The following steps are needed to achieve the given goal state:
-    {plan_context_9_2}
-    
-    Example subgoals
+    Example Subgoals:
     Subgoal 1:
-    (:goal (and (clear b7)(clear b8)(clear b9)(clear-table t3)))
-    
+    (:goal (and (clear b1) (clear-table t3)))
     Subgoal 2:
-    (:goal (and (on-table b7 t3)))
-    
+    (:goal (and (on-table b1 t3)))
     Subgoal 3:
-    (:goal (and (on b9 b7)))
-    
+    (:goal (and (on b3 b1)))
     Subgoal 4:
-    (:goal (and (on b8 b9)))
-    
-    Subgoal 5:
-    (:goal (and (clear b4)(clear b5)(clear b6)(clear-table t2)))
-    
-    Subgoal 6:
-    (:goal (and (on-table b5 t2)))
-    
-    Subgoal 7:
-    (:goal (and (on b6 b5)))
-    
-    Subgoal 8:
-    (:goal (and (on b4 b6)))
-    
-    Subgoal 9:
-    (:goal (and (clear b1)(clear b2)(clear b3)(clear-table t1)))
-    
-    Subgoal 10:
-    (:goal (and (on-table b1 t1)))
-    
-    Subgoal 11:
-    (:goal (and (on b2 b1)))
-    
-    Subgoal 12:
-    (:goal (and (on b3 b2)))
+    (:goal (and (on b2 b3)))
     '''
 
     subgoal_mcts_prompt = f'''
     You are a helpful assistant confident in PDDL planning.
-    Given a domain PDDL, a problem PDDL and several planning examples, generate {K} different plan PDDLs each starting with "Plan PDDL:"
-    Do not use quotation marks for code blocks, and do not start with expressions like 'plan'.
-    Return ONLY the plan PDDLs starting with "Plan PDDL:", NO other words or explanation. Return only the pddl, excluding comments.
+    Given a domain PDDL, a problem PDDL and planning examples, generate a concise plan PDDL to achieve the goal state.
     
-    Each plan should be different with every previous plans.
+    Rules:
+    - Output ONLY valid PDDL actions starting with "Plan PDDL:", one action per line.
+    - When putting a block on a table using (putdown ?b ?t), ?t MUST be an unoccupied table declared with (clear-table ?t) in the initial state.
     
-    Follow the pattern of each examples below. 
-    Let's think step by step.
-
     Domain PDDL:\n{domain}\n
     
-    Example 1: Total 8 blocks
-    Problem PDDL: 
-    {problem_8_0}
+    Example 1: Clearing an occupied table
+    Problem PDDL:
+    (define (problem prob-sub1)
+      (:domain blocksworld)
+      (:objects b1 b2 b3 - block t1 t2 t3 t4 t5 t6 - table)
+      (:init (arm-empty) (on b1 b2) (on b2 b3) (on-table b3 t3) (clear b1) (clear-table t1) (clear-table t2) (clear-table t4) (clear-table t5) (clear-table t6))
+      (:goal (and (clear b1) (clear-table t3))))
     Plan PDDL:
-    {plan_8_0}
-    
-    Problem PDDL: 
-    {problem_8_1}  
-    Plan PDDL:
-    {plan_8_1}
-    
-    Problem PDDL: 
-    {problem_8_2} 
-    Plan PDDL:
-    {plan_8_2}
-    
-    Problem PDDL: 
-    {problem_8_3}
-    Plan PDDL:
-    {plan_8_3}
-    
-    Problem PDDL: 
-    {problem_8_4}
-    Plan PDDL:
-    {plan_8_4}
+    (unstack b1 b2)
+    (putdown b1 t1)
+    (unstack b2 b3)
+    (putdown b2 t2)
+    (pickup b3 t3)
+    (putdown b3 t4)
 
-    Problem PDDL: 
-    {problem_8_5}
+    Example 2: Putting a block on a clear table
+    Problem PDDL:
+    (define (problem prob-sub2)
+      (:domain blocksworld)
+      (:objects b1 b2 b3 - block t1 t2 t3 t4 t5 t6 - table)
+      (:init (arm-empty) (clear b1) (clear b2) (clear b3) (on-table b1 t1) (on-table b2 t2) (on-table b3 t4) (clear-table t3) (clear-table t5) (clear-table t6))
+      (:goal (and (on-table b1 t3))))
     Plan PDDL:
-    {plan_8_5}
-    
-    Problem PDDL: 
-    {problem_8_6}
-    Plan PDDL:
-    {plan_8_6}
-    
-    Problem PDDL: 
-    {problem_8_7}
-    Plan PDDL:
-    {plan_8_7}
-    
-    Problem PDDL: 
-    {problem_8_8}
-    Plan PDDL:
-    {plan_8_8}
-    
-    Problem PDDL: 
-    {problem_8_9}
-    Plan PDDL:
-    {plan_8_9}
-    
-    Problem PDDL: 
-    {problem_8_10}
-    Plan PDDL:
-    {plan_8_10}
+    (pickup b1 t1)
+    (putdown b1 t3)
 
-    Example 2: Total 9 blocks
+    Example 3: Stacking a block
     Problem PDDL:
-    {problem_9_0}
+    (define (problem prob-sub3)
+      (:domain blocksworld)
+      (:objects b1 b2 b3 - block t1 t2 t3 t4 t5 t6 - table)
+      (:init (arm-empty) (clear b1) (clear b2) (clear b3) (on-table b1 t3) (on-table b2 t2) (on-table b3 t4) (clear-table t1) (clear-table t5) (clear-table t6))
+      (:goal (and (on b3 b1))))
     Plan PDDL:
-    {plan_9_0}
-    
-    Problem PDDL:
-    {problem_9_1}
-    Plan PDDL:
-    {plan_9_1}
-    
-    Problem PDDL:
-    {problem_9_2}
-    Plan PDDL:
-    {plan_9_2}
-    
-    Problem PDDL:
-    {problem_9_3}
-    Plan PDDL:
-    {plan_9_3}
-    
-    Problem PDDL:
-    {problem_9_4}
-    Plan PDDL:
-    {plan_9_4}
-    
-    Problem PDDL:
-    {problem_9_5}
-    Plan PDDL:
-    {plan_9_5}
-    
-    Problem PDDL:
-    {problem_9_6}
-    Plan PDDL:
-    {plan_9_6}
-    
-    Problem PDDL:
-    {problem_9_7}
-    Plan PDDL:
-    {plan_9_7}
-    
-    Problem PDDL:
-    {problem_9_8}
-    Plan PDDL:
-    {plan_9_8}
-    
-    Problem PDDL:
-    {problem_9_9}
-    Plan PDDL:
-    {plan_9_9}
-    
-    Problem PDDL:
-    {problem_9_10}
-    Plan PDDL:
-    {plan_9_10}
-    
-    Problem PDDL:
-    {problem_9_11}
-    Plan PDDL:
-    {plan_9_11}
-    
-    Example 3: Total 10 blocks
-    Rules:
-    - to achieve goal (clear b7)(clear b8)(clear b9)(clear b10), the last action should be ALWAYS (stack b10 b4). You CANNOT put b10 on a table.
-    - before putting b10 in new place, unstack b10 from b4. PLEASE don't use (pickup b10 t4). ALWAYS (unstack b10 b4)
-    - When generating {K} different plans, try to change actions about b10 when stacking it or unstacking it.
-    
-    Problem PDDL:
-    {problem_10_0}
-    Plan PDDL:
-    {plan_10_0}
-    
-    Problem PDDL: 
-    {problem_10_1}
-    Plan PDDL:
-    {plan_10_1}
-    
-    Problem PDDL:
-    {problem_10_2}
-    Plan PDDL:
-    {plan_10_2}
-    
-    Problem PDDL:
-    {problem_10_3}
-    Plan PDDL:
-    {plan_10_3}
-    
-    Problem PDDL:
-    {problem_10_4}
-    Plan PDDL:
-    {plan_10_4}
-    
-    Problem PDDL:
-    {problem_10_5}
-    Plan PDDL:
-    {plan_10_5}
-    
-    Problem PDDL:
-    {problem_10_6}
-    Plan PDDL:
-    {plan_10_6}
+    (pickup b3 t4)
+    (stack b3 b1)
 
+    Example 4: Stacking another block
     Problem PDDL:
-    {problem_10_7}
+    (define (problem prob-sub4)
+      (:domain blocksworld)
+      (:objects b1 b2 b3 - block t1 t2 t3 t4 t5 t6 - table)
+      (:init (arm-empty) (clear b2) (clear b3) (on-table b1 t3) (on b3 b1) (on-table b2 t2) (clear-table t1) (clear-table t4) (clear-table t5) (clear-table t6))
+      (:goal (and (on b2 b3))))
     Plan PDDL:
-    {plan_10_7}
-    
-    Problem PDDL:
-    {problem_10_8}
-    Plan PDDL:
-    {plan_10_8}
-    
-    Problem PDDL:
-    {problem_10_9}
-    Plan PDDL:
-    {plan_10_9}
-    
-    Problem PDDL:
-    {problem_10_10}
-    Plan PDDL:
-    {plan_10_10}
-    
-    Problem PDDL:
-    {problem_10_11}
-    Plan PDDL:
-    {plan_10_11}
-    
-    Problem PDDL:
-    {problem_10_12}
-    Plan PDDL:
-    {plan_10_12}
+    (pickup b2 t2)
+    (stack b2 b3)
     '''
 
     mcts_prompt = f'''
@@ -835,33 +675,32 @@ def get_gripper_args(plan_number):
     parser = argparse.ArgumentParser()
 
     # open files
-    with open("../domains/domain_blocksworld.pddl", "r") as f:
-        domain = f.read()
+    domain = _read_file("domains/domain_gripper.pddl")
 
-    with open("../experiments/gripper/problem/gripper2_32.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper2_32.pddl", "r") as f:
         problem_2_32 = f.read()
-    with open("../experiments/gripper/problem/gripper3_31.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper3_31.pddl", "r") as f:
         problem_3_31 = f.read()
-    with open("../experiments/gripper/problem/gripper4_31.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper4_31.pddl", "r") as f:
         problem_4_31 = f.read()
-    with open("../experiments/gripper/plan/gripper2_32.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper2_32.pddl", "r") as f:
         plan_2_32 = f.read()
-    with open("../experiments/gripper/plan/gripper3_31.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper3_31.pddl", "r") as f:
         plan_3_31 = f.read()
-    with open("../experiments/gripper/plan/gripper4_31.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper4_31.pddl", "r") as f:
         plan_4_31 = f.read()
 
-    with open("../experiments/gripper/problem/gripper3_31_K0_0.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper3_31_K0_0.pddl", "r") as f:
         problem_subgoal_3_0 = f.read()
-    with open("../experiments/gripper/problem/gripper3_31_K0_1.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper3_31_K0_1.pddl", "r") as f:
         problem_subgoal_3_1 = f.read()
-    with open("../experiments/gripper/problem/gripper3_31_K0_2.pddl", "r") as f:
+    with open("experiments/gripper/problem/gripper3_31_K0_2.pddl", "r") as f:
         problem_subgoal_3_2 = f.read()
-    with open("../experiments/gripper/plan/gripper3_31_K0_0.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper3_31_K0_0.pddl", "r") as f:
         plan_subgoal_3_0 = f.read()
-    with open("../experiments/gripper/plan/gripper3_31_K0_1.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper3_31_K0_1.pddl", "r") as f:
         plan_subgoal_3_1 = f.read()
-    with open("../experiments/gripper/plan/gripper3_31_K0_2.pddl", "r") as f:
+    with open("experiments/gripper/plan/gripper3_31_K0_2.pddl", "r") as f:
         plan_subgoal_3_2 = f.read()
 
     cot_prompt = f'''

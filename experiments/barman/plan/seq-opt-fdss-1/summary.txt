@@ -1,0 +1,349 @@
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 5, Problem Index: 1 - Failed
+No successful plans for problem size 5
+
+Problem Size: 6, Problem Index: 1 - Failed
+No successful plans for problem size 6
+
+Problem Size: 7, Problem Index: 1 - Failed
+No successful plans for problem size 7
+
+Problem Size: 8, Problem Index: 1 - Failed
+No successful plans for problem size 8
+
+Problem Size: 9, Problem Index: 1 - Failed
+No successful plans for problem size 9
+
+Problem Size: 10, Problem Index: 1 - Failed
+No successful plans for problem size 10
+
+Problem Size: 2, Problem Index: 1 - Success
+Planning Time: 7.7310 seconds
+
+Average planning time for problem size 2 (successful only): 7.7310 seconds
+Problem Size: 3, Problem Index: 1 - Success
+Planning Time: 32.2027 seconds
+
+Average planning time for problem size 3 (successful only): 32.2027 seconds
+Problem Size: 2, Problem Index: 1 - Failed
+No successful plans for problem size 2
+
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 2, Problem Index: 1 - Success
+Planning Time: 4.0925 seconds
+
+Average planning time for problem size 2 (successful only): 4.0925 seconds
+Problem Size: 3, Problem Index: 1 - Success
+Planning Time: 46.1428 seconds
+
+Average planning time for problem size 3 (successful only): 46.1428 seconds
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+
+Problem Size: 2, Problem Index: 1 - Success
+Planning Time: 8.1337 seconds
+
+Average planning time for problem size 2 (successful only): 8.1337 seconds
+Problem Size: 2, Problem Index: 1 - Success
+Planning Time: 6.5215 seconds
+
+Average planning time for problem size 2 (successful only): 6.5215 seconds
+Problem Size: 3, Problem Index: 1 - Success
+Planning Time: 20.3422 seconds
+
+Average planning time for problem size 3 (successful only): 20.3422 seconds
+Problem Size: 4, Problem Index: 1 - Failed
+No successful plans for problem size 4
+

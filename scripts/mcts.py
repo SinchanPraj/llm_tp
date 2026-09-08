@@ -41,6 +41,9 @@ def selection_expansion(tree, node):
 # Check whether the current node satisfies the goal state or not
 def is_goal_state(node, goal_state_set):
     state_dict = defaultdict(set, {pred: set(tuples) for pred, tuples in node})
+    # For domains with robot arms, arm must be empty at subgoal completion:
+    if "holding" in state_dict and state_dict["holding"]:
+        return False
     for atom in goal_state_set:
         pred = atom.predicate[0]
         args = atom.predicate[1:]
