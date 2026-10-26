@@ -1,3 +1,6 @@
 Problem Size: 3, Problem Index: 1 - Failed
 No successful plans for problem size 3
 
+Problem Size: 3, Problem Index: 1 - Failed
+No successful plans for problem size 3
+

@@ -18,3 +18,8 @@ Average planning time: 0.0000 seconds
 Success rate: 0.0000%
 Problem 1: Failure
 
+Problem size: 3, Plan number: 1
+Average planning time: 0.0000 seconds
+Success rate: 0.0000%
+Problem 1: Failure
+

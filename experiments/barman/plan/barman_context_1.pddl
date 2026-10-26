@@ -7,6 +7,5 @@
 (clean-shot shot2 ingredient3 left right)
 (leave left shot2)
 (grasp right shaker1)
-(shake cocktail1 ingredient3 ingredient1 shaker1 left right)
-(pour-shaker-to-shot cocktail1 shot1 left shaker1 l2 l1)
-; cost = 11 (unit cost)
+(shake cocktail1 ingredient3 ingredient1 shaker1 right left)
+(pour-shaker-to-shot cocktail1 shot1 right shaker1 l2 l1)

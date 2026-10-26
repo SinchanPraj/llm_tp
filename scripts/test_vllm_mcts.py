@@ -170,16 +170,16 @@ def test_vllm_logprobs_seqprob():
     return True
 
 
-def test_mcts_tree_search():
+def test_blocksworld_domain():
     print("=" * 65, flush=True)
-    print("TEST 3: Testing PDDL Simulation & MCTS Tree Search", flush=True)
+    print("TEST 3: Testing Domain 1: Blocksworld (MCTS Tree Search & Validation)", flush=True)
     print("=" * 65, flush=True)
     domain_f = os.path.join(PROJECT_ROOT, "domains", "domain_blocksworld.pddl")
     problem_f = os.path.join(PROJECT_ROOT, "experiments", "blocksworld", "problem", "blocksworld3_1.pddl")
 
     if not os.path.exists(domain_f) or not os.path.exists(problem_f):
         print("[SKIP] PDDL test files not found.", flush=True)
-        return
+        return False
 
     domprob = pddlpy.DomainProblem(domain_f, problem_f)
     print(f"Domain:  {domain_f}", flush=True)
@@ -198,7 +198,6 @@ def test_mcts_tree_search():
 
     tree = t.Tree(initial_state)
 
-    # Valid candidate plan that solves the goal
     valid_plan = [
         ("(unstack b1 b2)", 0.95),
         ("(putdown b1 t1)", 0.92),
@@ -214,7 +213,6 @@ def test_mcts_tree_search():
         ("(stack b2 b3)", 0.93)
     ]
 
-    # Alternative candidate plan with suboptimal / different branch
     alt_plan = [
         ("(unstack b1 b2)", 0.95),
         ("(putdown b1 t5)", 0.70),
@@ -222,9 +220,7 @@ def test_mcts_tree_search():
         ("(putdown b2 t6)", 0.65)
     ]
 
-    candidate_plans = [valid_plan, alt_plan]
-
-    for idx1, plan in enumerate(candidate_plans):
+    for idx1, plan in enumerate([valid_plan, alt_plan]):
         state = initial_state
         parent_node = state
         for idx2, (action, prob) in enumerate(plan):
@@ -238,26 +234,196 @@ def test_mcts_tree_search():
                 print(f"Action failed in simulation: {action}: {e}")
                 break
 
-    print(f"Action tree constructed with {len(tree.G.nodes)} state nodes and {len(tree.G.edges)} transitions.", flush=True)
+    print(f"Action tree: {len(tree.G.nodes)} state nodes, {len(tree.G.edges)} transitions.", flush=True)
 
     start_t = time.perf_counter()
     states_path, actions_path = mcts.mcts(tree, domprob, max_iterations=100)
     mcts_t = time.perf_counter() - start_t
 
-    print(f"MCTS Search completed in {mcts_t:.4f}s.", flush=True)
-    print(f"Selected Optimal Action Path ({len(actions_path)} steps):", flush=True)
-    for step, act in enumerate(actions_path, 1):
-        print(f"  {step}. {act}", flush=True)
-    print(flush=True)
+    print(f"MCTS Search completed in {mcts_t:.4f}s ({len(actions_path)} steps).", flush=True)
+    temp_plan = os.path.join(PROJECT_ROOT, "experiments", "blocksworld", "plan", "mcts_test_plan.pddl")
+    with open(temp_plan, "w") as f:
+        f.write("\n".join(actions_path))
+    valid, log = sym.validate(domain_f, problem_f, temp_plan)
+    print(f"[STATUS] Blocksworld MCTS Plan Valid: {valid} - {log}\n", flush=True)
+    return valid
+
+
+def test_gripper_domain():
+    print("=" * 65, flush=True)
+    print("TEST 4: Testing Domain 2: Gripper (MCTS Tree Search & Validation)", flush=True)
+    print("=" * 65, flush=True)
+    domain_f = os.path.join(PROJECT_ROOT, "domains", "domain_gripper.pddl")
+    problem_f = os.path.join(PROJECT_ROOT, "experiments", "gripper", "problem", "gripper3_31.pddl")
+
+    if not os.path.exists(domain_f) or not os.path.exists(problem_f):
+        print("[SKIP] PDDL test files not found.", flush=True)
+        return False
+
+    domprob = pddlpy.DomainProblem(domain_f, problem_f)
+    print(f"Domain:  {domain_f}", flush=True)
+    print(f"Problem: {problem_f}", flush=True)
+
+    from collections import defaultdict
+    import scripts.tree as t
+
+    initial_state_set = domprob.initialstate()
+    initial_state = defaultdict(set)
+    for atom in initial_state_set:
+        predicate = atom.predicate[0]
+        args = atom.predicate[1:]
+        initial_state[predicate].add(tuple(args))
+    initial_state = tuple(sorted((k, tuple(sorted(v))) for k, v in initial_state.items()))
+
+    tree = t.Tree(initial_state)
+
+    valid_plan = [
+        ("(pick robot1 ball1 room3 lgripper1)", 0.95),
+        ("(move robot1 room3 room1)", 0.92),
+        ("(drop robot1 ball1 room1 lgripper1)", 0.95),
+        ("(pick robot3 ball2 room4 lgripper3)", 0.90),
+        ("(move robot3 room4 room2)", 0.88),
+        ("(drop robot3 ball2 room2 lgripper3)", 0.93),
+        ("(move robot1 room1 room3)", 0.89),
+        ("(pick robot1 ball3 room3 lgripper1)", 0.91),
+        ("(move robot1 room3 room4)", 0.87),
+        ("(drop robot1 ball3 room4 lgripper1)", 0.94)
+    ]
+
+    alt_plan = [
+        ("(pick robot1 ball1 room3 lgripper1)", 0.95),
+        ("(move robot1 room3 room2)", 0.40),
+        ("(drop robot1 ball1 room2 lgripper1)", 0.40)
+    ]
+
+    for idx1, plan in enumerate([valid_plan, alt_plan]):
+        state = initial_state
+        parent_node = state
+        for idx2, (action, prob) in enumerate(plan):
+            try:
+                new_state = tg.apply_action(state, action, domprob)
+                child_node = new_state
+                tree.add_node(parent_node, child_node, action, prob, [idx1 + 1, idx2 + 1], 0, 0)
+                parent_node = child_node
+                state = new_state
+            except ValueError as e:
+                print(f"Action failed in simulation: {action}: {e}")
+                break
+
+    print(f"Action tree: {len(tree.G.nodes)} state nodes, {len(tree.G.edges)} transitions.", flush=True)
+
+    start_t = time.perf_counter()
+    states_path, actions_path = mcts.mcts(tree, domprob, max_iterations=100)
+    mcts_t = time.perf_counter() - start_t
+
+    print(f"MCTS Search completed in {mcts_t:.4f}s ({len(actions_path)} steps).", flush=True)
+    temp_plan = os.path.join(PROJECT_ROOT, "experiments", "gripper", "plan", "mcts_test_plan.pddl")
+    with open(temp_plan, "w") as f:
+        f.write("\n".join(actions_path))
+    valid, log = sym.validate(domain_f, problem_f, temp_plan)
+    print(f"[STATUS] Gripper MCTS Plan Valid: {valid} - {log}\n", flush=True)
+    return valid
+
+
+def test_barman_domain():
+    print("=" * 65, flush=True)
+    print("TEST 5: Testing Domain 3: Barman (MCTS Tree Search & Validation)", flush=True)
+    print("=" * 65, flush=True)
+    domain_f = os.path.join(PROJECT_ROOT, "domains", "domain_barman.pddl")
+    problem_f = os.path.join(PROJECT_ROOT, "experiments", "barman", "problem", "barman_context_1.pddl")
+
+    if not os.path.exists(domain_f) or not os.path.exists(problem_f):
+        print("[SKIP] PDDL test files not found.", flush=True)
+        return False
+
+    domprob = pddlpy.DomainProblem(domain_f, problem_f)
+    print(f"Domain:  {domain_f}", flush=True)
+    print(f"Problem: {problem_f}", flush=True)
+
+    from collections import defaultdict
+    import scripts.tree as t
+
+    initial_state_set = domprob.initialstate()
+    initial_state = defaultdict(set)
+    for atom in initial_state_set:
+        predicate = atom.predicate[0]
+        args = atom.predicate[1:]
+        initial_state[predicate].add(tuple(args))
+    initial_state = tuple(sorted((k, tuple(sorted(v))) for k, v in initial_state.items()))
+
+    tree = t.Tree(initial_state)
+
+    valid_plan = [
+        ("(grasp left shot2)", 0.95),
+        ("(fill-shot shot2 ingredient1 left right dispenser1)", 0.92),
+        ("(pour-shot-to-clean-shaker shot2 ingredient1 shaker1 left l0 l1)", 0.90),
+        ("(clean-shot shot2 ingredient1 left right)", 0.88),
+        ("(fill-shot shot2 ingredient3 left right dispenser3)", 0.89),
+        ("(pour-shot-to-used-shaker shot2 ingredient3 shaker1 left l1 l2)", 0.91),
+        ("(clean-shot shot2 ingredient3 left right)", 0.87),
+        ("(leave left shot2)", 0.93),
+        ("(grasp right shaker1)", 0.94),
+        ("(shake cocktail1 ingredient3 ingredient1 shaker1 right left)", 0.92),
+        ("(pour-shaker-to-shot cocktail1 shot1 right shaker1 l2 l1)", 0.96)
+    ]
+
+    alt_plan = [
+        ("(grasp left shot2)", 0.95),
+        ("(fill-shot shot2 ingredient1 left right dispenser1)", 0.92),
+        ("(leave left shot2)", 0.50)
+    ]
+
+    for idx1, plan in enumerate([valid_plan, alt_plan]):
+        state = initial_state
+        parent_node = state
+        for idx2, (action, prob) in enumerate(plan):
+            try:
+                new_state = tg.apply_action(state, action, domprob)
+                child_node = new_state
+                tree.add_node(parent_node, child_node, action, prob, [idx1 + 1, idx2 + 1], 0, 0)
+                parent_node = child_node
+                state = new_state
+            except ValueError as e:
+                print(f"Action failed in simulation: {action}: {e}")
+                break
+
+    print(f"Action tree: {len(tree.G.nodes)} state nodes, {len(tree.G.edges)} transitions.", flush=True)
+
+    start_t = time.perf_counter()
+    states_path, actions_path = mcts.mcts(tree, domprob, max_iterations=100)
+    mcts_t = time.perf_counter() - start_t
+
+    print(f"MCTS Search completed in {mcts_t:.4f}s ({len(actions_path)} steps).", flush=True)
+    temp_plan = os.path.join(PROJECT_ROOT, "experiments", "barman", "plan", "mcts_test_plan.pddl")
+    with open(temp_plan, "w") as f:
+        f.write("\n".join(actions_path))
+    valid, log = sym.validate(domain_f, problem_f, temp_plan)
+    print(f"[STATUS] Barman MCTS Plan Valid: {valid} - {log}\n", flush=True)
+    return valid
 
 
 if __name__ == "__main__":
+    import argparse
+    parser = argparse.ArgumentParser(description="Multi-Domain MCTS & Backend Verification Suite")
+    parser.add_argument("--domain", type=str, choices=["all", "blocksworld", "gripper", "barman"], default="all", help="Target domain to verify (default: all)")
+    args = parser.parse_args()
+
     print("\n" + "=" * 65, flush=True)
-    print("LLM-TP Backend & MCTS / Symbolic Exploration Runner", flush=True)
+    print(f"LLM-TP Multi-Domain Verification Suite (Target: {args.domain.upper()})", flush=True)
     print("=" * 65 + "\n", flush=True)
+
     test_ollama_backend()
     test_vllm_logprobs_seqprob()
-    test_mcts_tree_search()
+
+    results = {}
+    if args.domain in ["all", "blocksworld"]:
+        results["Blocksworld"] = "PASS" if test_blocksworld_domain() else "FAIL"
+    if args.domain in ["all", "gripper"]:
+        results["Gripper"] = "PASS" if test_gripper_domain() else "FAIL"
+    if args.domain in ["all", "barman"]:
+        results["Barman"] = "PASS" if test_barman_domain() else "FAIL"
+
     print("=" * 65, flush=True)
-    print("Exploration & Verification Complete.")
+    summary_str = " | ".join(f"{dom}: {status}" for dom, status in results.items())
+    print(f"Summary: {summary_str}")
     print("=" * 65 + "\n", flush=True)

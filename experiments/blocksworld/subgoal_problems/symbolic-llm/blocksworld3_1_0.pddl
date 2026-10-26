@@ -16,7 +16,7 @@
     (clear-table t4)
     (clear-table t1)
         )      
-        (:goal (and (clear b1) (clear-table t3)))
+        (:goal (and (on-table b1 t3) (on b3 b1) (on b2 b3)))
         
     )
     

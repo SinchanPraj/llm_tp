@@ -152,8 +152,6 @@ def main():
     args = parser.parse_args()
 
     model = args.model
-    if not model:
-        model = llm.DEFAULT_VLLM_MODEL if args.backend in ["vllm", "auto"] else llm.DEFAULT_OLLAMA_MODEL
 
     run(
         model=model,

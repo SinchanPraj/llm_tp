@@ -1,0 +1,13 @@
+To run the llm_tp
+
+(base) PS C:\Users\dell> cd C:\Users\dell\llm_tp
+
+(base) PS C:\Users\dell\llm_tp> conda activate llm_tp
+
+(llm_tp) PS C:\Users\dell\llm_tp> python scripts/test_all_planners.py --domain all
+
+(llm_tp) PS C:\Users\dell\llm_tp> python scripts/test_all_planners.py --domain blocksworld
+
+(llm_tp) PS C:\Users\dell\llm_tp> python scripts/test_all_planners.py --domain gripper
+
+(llm_tp) PS C:\Users\dell\llm_tp> python scripts/test_all_planners.py --domain barman

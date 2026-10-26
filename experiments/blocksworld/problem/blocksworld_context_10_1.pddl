@@ -1,7 +1,7 @@
 (define (problem BW-rand-1)
   (:domain blocksworld)
   (:objects
-    b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 - block; blocks
+    b1 b2 b3 b4 b5 b6 b7 b8 b9 b10 - block ; blocks
     t1 t2 t3 t4 t5 t6 - table ; tables
   )
 

@@ -85,11 +85,17 @@ def resolve_backend(backend=None, logprobs=False, model=None):
     if backend == "vllm":
         base_url = VLLM_BASE_URL
         api_key = VLLM_API_KEY
-        resolved_model = model or DEFAULT_VLLM_MODEL
+        if model and model != DEFAULT_OLLAMA_MODEL:
+            resolved_model = model
+        else:
+            resolved_model = DEFAULT_VLLM_MODEL
     elif backend == "ollama":
         base_url = OLLAMA_BASE_URL
         api_key = OLLAMA_API_KEY
-        resolved_model = model or DEFAULT_OLLAMA_MODEL
+        if model and model != DEFAULT_VLLM_MODEL:
+            resolved_model = model
+        else:
+            resolved_model = DEFAULT_OLLAMA_MODEL
     elif backend == "openai":
         base_url = OPENAI_BASE_URL
         api_key = OPENAI_API_KEY

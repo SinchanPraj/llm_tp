@@ -131,27 +131,19 @@ def main():
     parser = argparse.ArgumentParser(description="Run Neuro-Symbolic Task Planning Experiments")
     parser.add_argument("--model", type=str, default=None, help="Model name (e.g. Qwen/Qwen3-32B, qwen2.5:1.5b)")
     parser.add_argument("--domain", type=str, required=True, choices=["barman", "blocksworld", "gripper"], help="PDDL domain")
-    parser.add_argument("--subgoal_planner", "--subgoalplanner", dest="subgoal_planner", type=str, required=True, choices=["mcts-llm", "symbolic-llm"], help="Subgoal planner algorithm")
+    parser.add_argument("--subgoal_planner", "--subgoalplanner", "--algorithm", dest="subgoal_planner", type=str, required=True, choices=["mcts-llm", "symbolic-llm"], help="Subgoal planner algorithm")
     parser.add_argument("--backend", type=str, choices=["auto", "vllm", "ollama", "openai"], default="auto", help="LLM serving backend")
     parser.add_argument("--temperature", type=float, default=0.0, help="Sampling temperature")
     parser.add_argument("--planner", type=str, choices=["seq-opt-fdss-1", "seq-sat-lama-2011"], default="seq-opt-fdss-1", help="Fast Downward planner configuration")
-    parser.add_argument("--ns", type=int, nargs="+", default=[3], help="Number of sampled candidate plans (e.g. --ns 3 4 5)")
+    parser.add_argument("--ns", "--p_num", "--pnum", dest="ns", type=int, nargs="+", default=[2], help="Number of sampled candidate plans (e.g. --p_num 2 or --ns 2)")
     parser.add_argument("--sizes", type=int, nargs="+", default=[3], help="Problem sizes (e.g. --sizes 3 4 5)")
     parser.add_argument("--max_tokens", type=int, default=512, help="Max tokens per LLM completion (default: 512)")
     parser.add_argument("--path", type=str, default="", help="Path to fast-downward.py")
 
     args = parser.parse_args()
 
-    # Intelligent default model selection if unspecified
-    model = args.model
-    if not model:
-        if args.backend == "ollama":
-            model = llm.DEFAULT_OLLAMA_MODEL
-        else:
-            model = llm.DEFAULT_VLLM_MODEL
-
     run(
-        model=model,
+        model=args.model,
         max_tokens=args.max_tokens,
         domain=args.domain,
         algorithm=args.subgoal_planner,

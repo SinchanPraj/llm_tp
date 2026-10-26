@@ -64,12 +64,18 @@ def run_fd(domain, planner, p_size, p_idx, path):
 def main():
     parser = argparse.ArgumentParser(description="Run Fast Downward Classical Baseline")
     parser.add_argument("--domain", type=str, required=True, choices=["barman", "blocksworld", "gripper"], help="Name of PDDL domain")
-    parser.add_argument("--planner", type=str, choices=["seq-opt-fdss-1", "seq-sat-lama-2011"], default="seq-opt-fdss-1", help="Fast Downward configuration")
+    parser.add_argument("--planner", type=str, choices=["seq-opt-fdss-1", "seq-sat-lama-2011", "lama-first", "lama", "fdss"], default="seq-opt-fdss-1", help="Fast Downward configuration")
     parser.add_argument("--sizes", type=int, nargs="+", default=[3], help="Problem sizes (e.g. --sizes 3 4 5)")
     parser.add_argument("--path", type=str, default=r"C:\Users\dell\downward\fast-downward.py", help="Path to fast-downward.py")
     args = parser.parse_args()
 
-    run_fd(args.domain, args.planner, args.sizes, [1], args.path)
+    planner = args.planner
+    if planner in ["lama", "lama-first"]:
+        planner = "seq-sat-lama-2011"
+    elif planner == "fdss":
+        planner = "seq-opt-fdss-1"
+
+    run_fd(args.domain, planner, args.sizes, [1], args.path)
 
 
 if __name__ == "__main__":
